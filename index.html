@@ -14,6 +14,28 @@
   body { min-height: 100vh; background: var(--ice); color: var(--ink); font: 500 17px/1.45 "Plus Jakarta Sans", system-ui, sans-serif;
          display: flex; justify-content: center; padding: 18px 16px 36px; }
   main { width: 100%; max-width: 460px; }
+  main.landing { max-width: 1040px; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; background: var(--ink); color: var(--white); padding: 7px 14px; border-radius: 999px; margin-top: 18px; }
+  .hero { display: grid; gap: 8px; align-items: center; }
+  .hero .art { max-width: 420px; order: -1; }
+  .sec { font-size: 26px; font-weight: 800; letter-spacing: -.03em; margin-top: 44px; }
+  .rules.three small { display: block; font-weight: 600; font-size: 14px; color: var(--muted); }
+  .band { margin-top: 44px; padding: 30px 26px; background: var(--ink); color: var(--white); border-radius: 26px; }
+  .band h2 { font-size: 28px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+  .band em { font-style: normal; color: var(--tc); }
+  .band p { margin-top: 12px; opacity: .8; }
+  .maker { max-width: 620px; }
+  @media (min-width: 860px) {
+    main.landing { padding-top: 10px; }
+    .hero { grid-template-columns: 1.05fr 1fr; gap: 40px; margin-top: 30px; }
+    .hero .art { max-width: 100%; order: 0; }
+    main.landing h1 { font-size: 60px; }
+    main.landing .lead { font-size: 20px; max-width: 34em; }
+    .rules.three { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .rules.three li { align-items: flex-start; padding: 18px; border-radius: 20px; }
+    .band { padding: 48px; }
+    .band h2 { font-size: 40px; max-width: 18em; }
+  }
   .wm { font-weight: 800; font-size: 26px; letter-spacing: -.04em; display: inline-flex; align-items: flex-end; }
   .wm i { width: 8px; height: 8px; border-radius: 50%; background: var(--tc); margin: 0 0 6px 3px; }
   .top { display: flex; justify-content: space-between; align-items: center; }
@@ -73,24 +95,21 @@
   .made { display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px; background: var(--ink); color: var(--white); }
   .made span:first-child { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
   .made .wm { font-size: 24px; }
-  .maker { margin-top: 22px; }
-  .maker summary { cursor: pointer; font-weight: 800; font-size: 16px; padding: 14px 18px; background: var(--white); border: 3px solid var(--ink); border-radius: 18px; }
-  .maker[open] summary { margin-bottom: 10px; }
   [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><span class="wm">ruray<i></i></span><small>Reto QR</small></div>
+  <div class="top"><span class="wm">ruray<i></i></span><small>Dev Day · The Builders</small></div>
 
   <!-- Intro: shown when the link carries a reward. -->
   <section id="intro" hidden>
-    <img class="art" src="art/hero.png" alt="">
-    <h1 id="title">Tus créditos están <em>cayendo del cielo.</em></h1>
-    <p class="lead">Tu código QR viene en 16 pedazos. Atrápalos todos con la caja para armarlo.</p>
+    <img class="art" src="art/build.png" alt="" onerror="this.src='art/hero.png'">
+    <h1 id="title">Builder, tu premio <em>se construye.</em></h1>
+    <p class="lead">Tu código QR viene en 16 bloques. Atrápalos todos con la caja y constrúyelo.</p>
     <ul class="rules">
-      <li><b>+1</b>Atrapa cada pedazo del QR</li>
-      <li class="bad"><b>−1</b>Esquiva los bugs: te quitan un pedazo</li>
+      <li><b>+1</b>Atrapa cada bloque del QR</li>
+      <li class="bad"><b>−1</b>Esquiva los bugs: te tumban un bloque</li>
     </ul>
     <div class="row"><button class="btn main big" id="go">Jugar</button></div>
   </section>
@@ -98,10 +117,10 @@
   <!-- Game: board with the pieces caught, and the field where they fall. -->
   <section id="game" hidden>
     <img class="art" id="winArt" src="art/win.png" alt="" hidden>
-    <h1 id="winTitle" hidden>¡Lo armaste! <em>Este es tu código.</em></h1>
+    <h1 id="winTitle" hidden>¡Obra terminada! <em>Este es tu código.</em></h1>
     <div class="hud" id="hud">
       <div class="board" id="board" aria-label="Código QR en construcción"></div>
-      <div class="stats"><span>Pedazos<b id="count">0/16</b></span><span>Tiempo<b id="time">0:00</b></span></div>
+      <div class="stats"><span>Bloques<b id="count">0/16</b></span><span>Tiempo<b id="time">0:00</b></span></div>
     </div>
     <div class="field" id="field"><canvas id="canvas" aria-label="Zona de juego. Mueve la caja con el dedo, el ratón o las flechas."></canvas><div class="toast" id="toast"></div></div>
     <p class="hint" id="how">Mueve la caja con el dedo, el ratón o las flechas.</p>
@@ -113,37 +132,50 @@
     </div>
   </section>
 
-  <!-- Creator: no reward in the link. Paste the list of people and send each email in one click. -->
+  <!-- Landing: no reward in the link. Explains the idea, links to a demo, and prepares the emails. -->
   <section id="create" hidden>
-    <img class="art" src="art/hero.png" alt="">
-    <h1>Un premio que <em>hay que atrapar.</em></h1>
-    <p class="lead">En vez de mandar un código por correo, manda un juego. Quien lo recibe atrapa los pedazos de su QR y recién ahí puede reclamar sus créditos.</p>
-    <div class="row"><a class="btn main big" id="demo" href="#">Jugar la demo</a></div>
-    <ul class="rules">
-      <li><b>1</b>Llega un correo con tu enlace personal</li>
-      <li><b>2</b>Atrapas los 16 pedazos y esquivas los bugs</li>
-      <li><b>3</b>Se arma tu QR y reclamas el premio</li>
+    <div class="hero">
+      <div>
+        <span class="badge">Dev Day · The Builders AI Ecuador</span>
+        <h1>Los builders no reciben premios. <em>Los construyen.</em></h1>
+        <p class="lead">En vez de mandar un código por correo, manda una obra en construcción. Quien lo recibe atrapa los 16 bloques de su QR y recién ahí puede reclamar sus créditos.</p>
+        <div class="row"><a class="btn main big" id="demo" href="#">Jugar la demo</a><a class="btn big" href="#organiza">Enviar premios</a></div>
+      </div>
+      <img class="art" src="art/build.png" alt="" onerror="this.src='art/hero.png'">
+    </div>
+
+    <h2 class="sec">Cómo funciona</h2>
+    <ul class="rules three">
+      <li><b>1</b><span>Llega un correo<small>Cada persona recibe su enlace personal.</small></span></li>
+      <li><b>2</b><span>Se construye el QR<small>Atrapas los 16 bloques y esquivas los bugs.</small></span></li>
+      <li><b>3</b><span>Se reclama el premio<small>El QR queda listo para escanear o abrir.</small></span></li>
     </ul>
-    <details class="maker"><summary>Crear premios para enviar</summary>
-    <p class="hint">Pega la lista de personas. A cada una le sale un enlace propio y un botón que abre tu correo con el mensaje ya escrito.</p>
-    <div class="card">
+
+    <div class="band">
+      <h2>Un código pegado en un correo se olvida. <em>Uno que construiste, no.</em></h2>
+      <p>Sin servidor ni registro: una sola página que corre en el navegador de cada persona.</p>
+    </div>
+
+    <h2 class="sec" id="organiza">Para quien organiza</h2>
+    <p class="lead">Pega la lista de personas. A cada una le sale un enlace propio y un botón que abre tu correo con el mensaje ya escrito.</p>
+    <div class="card maker">
       <label>Una persona por línea: nombre, correo, código o enlace del premio
         <textarea id="fList" placeholder="Ana, ana@ejemplo.com, CREDITOS-ABC-123&#10;Luis, luis@ejemplo.com, CREDITOS-DEF-456" spellcheck="false"></textarea></label>
       <label>Enviar desde<select id="fMail"><option value="gmail">Gmail</option><option value="outlook">Outlook en la web</option><option value="app">La aplicación de correo de este equipo</option></select></label>
       <div class="row"><button class="btn main" id="make">Preparar correos</button></div>
       <p class="msg" id="makeMsg"></p>
     </div>
-    <div class="card" id="madeLink" hidden>
+    <div class="card maker" id="madeLink" hidden>
       <h2 id="madeTitle">Correos listos</h2>
       <p class="hint">Cada botón abre un correo ya redactado. Revísalo y pulsa enviar.</p>
       <ul class="people" id="people"></ul>
     </div>
-    </details>
   </section>
 
   <footer>
-    <div class="made"><span>Made by</span><span class="wm">ruray<i></i></span></div>
-    <p><b>Software, consultoría y capacitación para negocios.</b> Ecuador · Australia.</p>
+    <div class="made"><span>Built by</span><span class="wm">ruray<i></i></span></div>
+    <p><b>Ruray construye software, consultoría y capacitación para negocios.</b> Ecuador · Australia.</p>
+    <p>Reto hecho por Ruray para el Dev Day de la comunidad The Builders AI Ecuador. No es una página oficial de la comunidad.</p>
     <p>Todo ocurre en tu navegador. El juego es la experiencia, no la seguridad: usa códigos de un solo uso.</p>
   </footer>
 </main>
@@ -194,7 +226,7 @@
   function startGame(data) {
     const qr = qrCanvas(data.c), image = qr.toDataURL("image/png"), slice = qr.width / GRID;
     const board = $("board"), field = $("field"), canvas = $("canvas"), ctx = canvas.getContext("2d");
-    if (data.n) $("title").innerHTML = `${escapeHtml(data.n)}, tus créditos están <em>cayendo del cielo.</em>`;
+    if (data.n) $("title").innerHTML = `${escapeHtml(data.n)}, tu premio <em>se construye.</em>`;
 
     board.style.gridTemplateColumns = `repeat(${GRID}, 1fr)`;
     const cells = Array.from({ length: TOTAL }, (_, i) => {
@@ -258,7 +290,7 @@
             if (have.length) { const lost = have[Math.floor(Math.random() * have.length)]; got.delete(lost); cells[lost].classList.remove("got"); }
             floats.push({ x: it.x, y: top - 6, text: "−1", color: TC, life: .8 });
             field.classList.remove("hit"); void field.offsetWidth; field.classList.add("hit");
-            toast("¡Un bug! Perdiste un pedazo"); beep(170, .28, "sawtooth", .07, .5);
+            toast("¡Un bug! Te tumbó un bloque"); beep(170, .28, "sawtooth", .07, .5);
           }
           hud();
         }
@@ -371,8 +403,8 @@
       const kind = $("fMail").value;
       $("people").innerHTML = rows.map((row, i) => {
         const link = location.origin + location.pathname + "#" + encode({ c: row.code, n: row.name });
-        const subject = `${row.name}, tus créditos te esperan (hay que atraparlos)`;
-        const body = `Hola ${row.name}:\n\nTienes créditos esperándote, pero hay que ganárselos. Tu código QR viene en pedazos: atrápalos todos para armarlo.\n\n${link}\n\nSuerte con los bugs.\n\nMade by Ruray`;
+        const subject = `${row.name}, tu premio se construye`;
+        const body = `Hola ${row.name}:\n\nLos builders no reciben premios: los construyen. Tu código QR viene en 16 bloques. Atrápalos todos y reclama tus créditos.\n\n${link}\n\nSuerte con los bugs.\n\nBuilt by Ruray`;
         return `<li data-i="${i}"><div>${escapeHtml(row.name)}<small>${escapeHtml(row.email)}</small></div>
           <a class="btn main small send" href="${escapeHtml(compose(kind, row.email, subject, body))}" target="_blank" rel="noopener">Abrir correo</a>
           <button class="btn small copy" data-link="${escapeHtml(link)}">Enlace</button></li>`;
@@ -388,7 +420,7 @@
   }
 
   const data = decode(location.hash.slice(1));
-  if (data) { $("intro").hidden = false; startGame(data); } else { $("create").hidden = false; startCreator(); }
+  if (data) { $("intro").hidden = false; startGame(data); } else { document.querySelector("main").classList.add("landing"); $("create").hidden = false; startCreator(); }
   addEventListener("hashchange", () => location.reload());
 </script>
 </body>

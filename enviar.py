@@ -44,10 +44,10 @@ def main():
 
     for name, email, code in people:
         link = link_for(base, code, name)
-        subject = f"{name}, tus créditos te esperan (hay que atraparlos)"
-        body = (f"Hola {name}:\n\nTienes créditos esperándote, pero hay que ganárselos. "
-                f"Tu código QR viene en pedazos: atrápalos todos para armarlo.\n\n{link}\n\n"
-                "Suerte con los bugs.\n\nMade by Ruray")
+        subject = f"{name}, tu premio se construye"
+        body = (f"Hola {name}:\n\nLos builders no reciben premios: los construyen. "
+                f"Tu código QR viene en 16 bloques. Atrápalos todos y reclama tus créditos.\n\n{link}\n\n"
+                "Suerte con los bugs.\n\nBuilt by Ruray")
         if send:
             result = subprocess.run(["osascript", "-e", SCRIPT, email, subject, body], capture_output=True, text=True)
             print(f"{email}: {'sent' if result.returncode == 0 else 'FAILED ' + result.stderr.strip()}")
